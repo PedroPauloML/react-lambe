@@ -7,7 +7,6 @@ import {
 import Header from "../Components/Header"
 import Post from "../Components/Post"
 import { connect } from "react-redux"
-import { addPost } from "../store/actions/posts"
 
 class Feed extends Component {
   render() {
@@ -35,7 +34,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = ({ posts }) => {
   return {
-    posts: posts.posts.reverse(),
+    posts: posts.posts.sort(function (x,y) {return y.id - x.id}),
   }
 }
 
