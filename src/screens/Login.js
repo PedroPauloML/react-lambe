@@ -6,14 +6,18 @@ import {
   TextInput,
   TouchableOpacity
 } from "react-native"
+import { connect } from "react-redux"
+import { login } from "../store/actions/user"
 
 class Login extends Component {
   state = {
+    name: "Temporário",
     email: "",
     password: ""
   }
 
   login = () => {
+    this.props.onLogin({ ...this.state })
     this.props.navigation.navigate("Profile")
   }
 
@@ -25,7 +29,7 @@ class Login extends Component {
           value={this.state.email}
           onChangeText={email => this.setState({ email })} />
         <TextInput placeholder="Senha" style={styles.input}
-          secureTextEntry={true} value={this.state.email}
+          secureTextEntry={true} value={this.state.password}
           onChangeText={password => this.setState({ password })} />
         <TouchableOpacity onPress={this.login} 
           style={styles.button}>
@@ -67,4 +71,11 @@ const styles = StyleSheet.create({
   }
 })
 
-export default Login
+const mapDispatchToProps = dispatch => {
+  return {
+    onLogin: user => dispatch(login(user))
+  }
+}
+
+// export default Login
+export default connect(null, mapDispatchToProps)(Login)
