@@ -15,6 +15,8 @@ import ImagePicker from "react-native-image-picker"
 import { connect } from "react-redux"
 import { addPost } from "../store/actions/posts"
 
+const noUser = "Você precisa estar logado para adicionar imagens"
+
 class AddPhoto extends Component {
   state = {
     image: null,
@@ -22,28 +24,36 @@ class AddPhoto extends Component {
   }
 
   pickImage = () => {
-    ImagePicker.showImagePicker({
-      title: "Escolha a imagem",
-      maxHeight: 600,
-      maxWidth: 800
-    }, res => {
-      if (!res.didCancel) {
-        this.setState({ image: { uri: res.uri, base64: res.data } })
-      }
-    })
+    if (!this.props.name) {
+      Alert.alert("Falha!", noUser)
+    } else {
+      ImagePicker.showImagePicker({
+        title: "Escolha a imagem",
+        maxHeight: 600,
+        maxWidth: 800
+      }, res => {
+        if (!res.didCancel) {
+          this.setState({ image: { uri: res.uri, base64: res.data } })
+        }
+      })
+    }
   }
 
   save = async () => {
-    this.props.onAddPost({
-      id: Math.random(),
-      nickname: this.props.name,
-      email: this.props.email,
-      image: this.state.image,
-      comments: [{
+    if (!this.props.name) {
+      Alert.alert("Falha!", noUser)
+    } else {
+        this.props.onAddPost({
+        id: Date.parse(new Date()),
         nickname: this.props.name,
-        comment: this.state.comment,
-      }],
-    })
+        email: this.props.email,
+        image: this.state.image,
+        comments: [{
+          nickname: this.props.name,
+          comment: this.state.comment,
+        }],
+      })
+    }
 
     this.setState({ image: null, comment: "" })
     this.props.navigation.navigate("Feed")
@@ -63,6 +73,7 @@ class AddPhoto extends Component {
           <TextInput placeholder="Algum comentário para a foto"
             style={styles.input}
             value={this.state.comment}
+            editable={this.props.name !== null}
             onChangeText={comment => this.setState({ comment })} />
           <TouchableOpacity onPress={this.save}
             style={styles.button}>
