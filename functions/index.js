@@ -19,7 +19,7 @@ exports.uploadImage = functions.https.onRequest((request, response) => {
         request.body.image, // image file
         "base64" // enconding type
       )
-      const buckect = storage.bucket("lambe-e36d9.appspot.com")
+      const bucket = storage.bucket("lambe-e36d9.appspot.com")
       const id = uuid()
       bucket.upload("/tmp/imageToSave.jpg", {
         uploadType: "media",
@@ -37,7 +37,7 @@ exports.uploadImage = functions.https.onRequest((request, response) => {
         } else {
           const filename = encodeURIComponent(file.name)
           const imageUrl = "https://firebase.googleapis.com/v0/b/"
-            + buckect.name + "/o/" + filename + "?alt=media&token=" + id
+            + bucket.name + "/o/" + filename + "?alt=media&token=" + id
           return response.status(201).json({ imageUrl: imageUrl })
         }
       })
