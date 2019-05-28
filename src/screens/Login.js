@@ -16,9 +16,15 @@ class Login extends Component {
     password: ""
   }
 
+  componentDidUpdate = prevProps => {
+    if (prevProps.isLoading && !this.props.isLoading) {
+      this.props.navigation.navigate("Profile")
+    }
+  }
+
   login = () => {
     this.props.onLogin({ ...this.state })
-    this.props.navigation.navigate("Profile")
+    // this.props.navigation.navigate("Profile")
   }
 
   render() {
@@ -31,14 +37,25 @@ class Login extends Component {
         <TextInput placeholder="Senha" style={styles.input}
           secureTextEntry={true} value={this.state.password}
           onChangeText={password => this.setState({ password })} />
-        <TouchableOpacity onPress={this.login} 
-          style={styles.button}>
-          <Text style={styles.buttonText}>Login</Text>
+        <TouchableOpacity 
+          onPress={this.login} 
+          disabled={this.props.isLoading}
+          style={[
+            styles.button,
+            this.props.isLoading ? styles.buttonDisabled : null
+          ]}>
+          <Text style={styles.buttonText}>
+            {this.props.isLoading ? "Verificando credenciais..." : "Login"}
+          </Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => {
             this.props.navigation.navigate("Register")
           }} 
-          style={styles.button}>
+          disabled={this.props.isLoading}
+          style={[
+            styles.button,
+            this.props.isLoading ? styles.buttonDisabled : null
+          ]}>
           <Text style={styles.buttonText}>Criar nova conta</Text>
         </TouchableOpacity>
       </View>
@@ -68,8 +85,17 @@ const styles = StyleSheet.create({
     height: 40,
     borderWidth: 1,
     borderColor: "#333",
+  },
+  buttonDisabled: {
+    backgroundColor: "#aaa"
   }
 })
+
+const mapStateToProps = ({ user }) => {
+  return {
+    isLoading: user.isLoading
+  }
+} 
 
 const mapDispatchToProps = dispatch => {
   return {
@@ -78,4 +104,4 @@ const mapDispatchToProps = dispatch => {
 }
 
 // export default Login
-export default connect(null, mapDispatchToProps)(Login)
+export default connect(mapStateToProps, mapDispatchToProps)(Login)

@@ -36,8 +36,14 @@ class Register extends Component {
           onChangeText={password => this.setState({ password })} />
         <TouchableOpacity
           onPress={() => { this.props.onCreateUser(this.state) }} 
-          style={styles.button}>
-          <Text style={styles.buttonText}>Salvar</Text>
+          disabled={this.props.isLoading}
+          style={[
+            styles.button,
+            this.props.isLoading ? styles.buttonDisabled : null
+          ]}>
+          <Text style={styles.buttonText}>
+            {this.props.isLoading ? "Salvando..." : "Salvar"}
+          </Text>
         </TouchableOpacity>
       </View>
     )
@@ -67,6 +73,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#333",
     paddingLeft: 15
+  },
+  buttonDisabled: {
+    backgroundColor: "#aaa"
   }
 })
 
