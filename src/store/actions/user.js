@@ -5,6 +5,7 @@ import {
   USER_LOADED
 } from "./actionTypes"
 import axios from "axios"
+import { setMessage } from "./message"
 
 const authBaseURL = "https://www.googleapis.com/identitytoolkit/v3/relyingparty"
 const API_KEY = "AIzaSyAsAmV3mU3AGkqQpJI4E7uqwEk-bdgd5No"
@@ -29,16 +30,24 @@ export const createUser = (user) => {
       password: user.password,
       returnSecureToken: true
     })
-      .catch(err => console.log(err))
+      .catch(err => dispatch(setMessage({
+        title: "Erro!",
+        text: `[${err.response.data.error.code}] ${err.response.data.error.errors.map(error => error.message).join("; ")}`
+      })))
       .then(res => {
-        console.log(res)
         if (res.data.localId) {
           axios.put(`/users/${res.data.localId}.json`, {
             name: user.name
           })
-            .catch(err => console.log(err))
+            .catch(err => dispatch(setMessage({
+              title: "Erro!",
+              text: `[${err.response.data.error.code}] ${err.response.data.error.errors.map(error => error.message).join("; ")}`
+            })))
             .then(res => {
-              console.log("Usuário criado com sucesso!")
+              dispatch(setMessage({
+                title: "Sucesso!",
+                text: "Usuário cadastrado com sucesso!"
+              }))
             })
         }
       })
@@ -65,11 +74,19 @@ export const login = user => {
       password: user.password,
       returnSecureToken: true
     })
-      .catch(err => console.log(err))
+      .catch(err => {
+        dispatch(setMessage({
+          title: "Erro!",
+          text: `[${err.response.data.error.code}] ${err.response.data.error.errors.map(error => error.message).join("; ")}`
+        }))
+      })
       .then(res => {
         if (res.data.localId) {
           axios.get(`/users/${res.data.localId}.json`)
-          .catch(err => console.log(err))
+          .catch(err => dispatch(setMessage({
+            title: "Erro!",
+            text: `[${err.response.data.error.code}] ${err.response.data.error.errors.map(error => error.message).join("; ")}`
+          })))
           .then(res => {
             user.password = null
             user.name = res.data.name
