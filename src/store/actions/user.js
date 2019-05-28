@@ -25,6 +25,7 @@ export const logout = () => {
 
 export const createUser = (user) => {
   return dispatch => {
+    dispatch(loadingUser())
     axios.post(`${authBaseURL}/signupNewUser?key=${API_KEY}`, {
       email: user.email,
       password: user.password,
@@ -43,11 +44,11 @@ export const createUser = (user) => {
               title: "Erro!",
               text: `[${err.response.data.error.code}] ${err.response.data.error.errors.map(error => error.message).join("; ")}`
             })))
-            .then(res => {
-              dispatch(setMessage({
-                title: "Sucesso!",
-                text: "Usuário cadastrado com sucesso!"
-              }))
+            .then(() => {
+              delete user.password
+              user.id = res.data.localId
+              dispatch(userLogged(user))
+              dispatch(userLoaded())
             })
         }
       })
@@ -88,7 +89,7 @@ export const login = user => {
             text: `[${err.response.data.error.code}] ${err.response.data.error.errors.map(error => error.message).join("; ")}`
           })))
           .then(res => {
-            user.password = null
+            delete user.password
             user.name = res.data.name
             dispatch(userLogged(user))
             dispatch(userLoaded())

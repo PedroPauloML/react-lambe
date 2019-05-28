@@ -16,9 +16,17 @@ class Login extends Component {
     password: ""
   }
 
+  componentDidMount() {
+    this.props.navigation.addListener('willFocus', (playload)=>{
+      if (this.props.email) {
+        this.props.navigation.navigate("Profile")
+      }
+    })
+  }
+
   componentDidUpdate = prevProps => {
     if (prevProps.isLoading && !this.props.isLoading) {
-      this.props.navigation.navigate("Profile")
+      this.props.navigation.navigate("Feed")
     }
   }
 
@@ -93,7 +101,9 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = ({ user }) => {
   return {
-    isLoading: user.isLoading
+    email: user.email,
+    name: user.name,
+    isLoading: user.isLoading,
   }
 } 
 
