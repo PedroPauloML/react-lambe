@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = ({ posts }) => {
   return {
-    posts: posts.posts.sort(function (x,y) {return y.id - x.id}),
+    posts: posts.posts,
   }
 }
 
