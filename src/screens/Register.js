@@ -16,10 +16,12 @@ class Register extends Component {
     password: "",
   }
 
-  componentDidUpdate = prevProps => {
-    if (prevProps.isLoading && !this.props.isLoading) {
-      this.props.navigation.navigate("Feed")
-    }
+  componentDidMount() {
+    this.props.navigation.addListener('willFocus', (playload)=>{
+      if (this.props.email) {
+        this.props.navigation.navigate("Profile")
+      }
+    })
   }
 
   componentDidUpdate = prevProps => {
