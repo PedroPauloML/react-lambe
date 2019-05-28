@@ -1,4 +1,4 @@
-const functions = require('firebase-functions');
+const functions = require('firebase-functions')
 const cors = require("cors")({ origin: true })
 const fs = require("fs")
 const uuid = require("uuid-v4")
@@ -36,7 +36,7 @@ exports.uploadImage = functions.https.onRequest((request, response) => {
           return response.status(500).json({ error: err })
         } else {
           const filename = encodeURIComponent(file.name)
-          const imageUrl = "https://firebase.googleapis.com/v0/b/"
+          const imageUrl = "https://firebasestorage.googleapis.com/v0/b/"
             + bucket.name + "/o/" + filename + "?alt=media&token=" + id
           return response.status(201).json({ imageUrl: imageUrl })
         }
@@ -46,4 +46,4 @@ exports.uploadImage = functions.https.onRequest((request, response) => {
       return response.status(500).json({ error: err })
     }
   })
-});
+})
